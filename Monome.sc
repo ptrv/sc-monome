@@ -1,23 +1,26 @@
 //-----------------------------------------------------------------
 //
-// Clean interactions with the Monome 40h.
-//  __ Daniel Jones
-//     http://www.erase.net
+// Library for clean interactions with Monome devices via 
+// serialosc
 //
-// Thanks to Tristan Strange for 128/256 support and custom prefix.
-//  
-// Run serialio with:
-//    ./serialio localhost:57120
+//  __ Tristan Strange
+//     <tristan.strange@gmail.com>
 //
-// Usage:
-//    m = Monome.new(host, port, prefix, height, width);
+//  __ Forked from serialio version by Daniel Jones availiable at
+//     <https://github.com/ideoforms/sc-monome/>
+// 
+// Run serialosc with:
+//    ./serialosc
+//
+// Note the port number your monome is running on
+//
+//    m = Monome.new(port: <port number>);
 //    m = Monome.new;
 //    m.action = { |x, y, on|
 //      [x, y, on].postln;
 //    };
 //    m.led(5, 6, 1);
-//    m.led_row(4, 255);
-//    m.intensity(0.5);
+//    m.ledRow(4, 255);
 //    m.clear;
 //
 //-----------------------------------------------------------------
@@ -27,13 +30,12 @@ Monome
 	var <host, <port;
 	var <prefix;
 	var <height, <width;
-	var <>osc, <>target;
+	var <>target;
 	var <>action;
 
-	
 	var <pressed;
 
-	*new { |host = "127.0.0.1", port = 8080, prefix = "/box", height = 8, width = 8|
+	*new { |host = "127.0.0.1", port = 8080, prefix = "/monome", height = 8, width = 8|
 		^super.newCopyArgs(host, port, prefix, height, width).init;
 	}
 	
@@ -46,59 +48,60 @@ Monome
 	init {
 		pressed = [];
 		height.do({ pressed = pressed.add(Array.fill(width, 0)) });		
-		osc = OSCresponder.new(nil, prefix ++ "/press", { |time, resp, msg|
+		
+		OSCFunc({ |msg|
 			pressed[msg[2]][msg[1]] = msg[3];
 			if (action.notNil)
 			   { action.value(msg[1], msg[2], msg[3]); };
-		});
-		osc.add;
+		}, prefix ++ "/grid/key");
 
 		target = NetAddr(host, port);
+
+		this.port_(NetAddr.langPort)
 	}
 
-	setPrefix { |pre, dev|
+	prefix_ { |pre|
 		prefix = pre;
-		(dev.notNil && pre.notNil).if(
-			{ target.sendMsg("/sys/prefix", dev, prefix) },
-			{ target.sendMsg("/sys/prefix", prefix) }
-		);
+		target.sendMsg("/sys/prefix", prefix);
+	}
+
+	port_ { |p| 
+		port = p;
+		target.sendMsg("/sys/port", port);
+	}
+
+	host_ { |h| 
+		host = h;
+		target.sendMsg("/sys/host", host);
+	}
+
+	rotation_ { |rotation| 
+		target.sendMsg("/sys/rotation", rotation);
 	}
 
 	led { |x, y, on = 1|
-		target.sendMsg(prefix ++ "/led", x.asInteger, y.asInteger, on.asInteger);
+		target.sendMsg(prefix ++ "/grid/led/set", x.asInteger, y.asInteger, on.asInteger);
 	}
 
-	led_row { |y, on = 255, on2|
-		if (on2.isNil)
-		{
-			target.sendMsg(prefix ++ "/led_row", y.asInteger, on.asInteger);
-		}
-		{
-			target.sendMsg(prefix ++ "/led_row", y.asInteger, on.asInteger, on2.asInteger);
-		};
+	ledRow { |y, xOffset, on = 255|
+		target.sendMsg(prefix ++ "/grid/led/row", y.asInteger, xOffset.asInteger, on.asInteger);
 	}
 
-	led_col { |x, on = 255, on2|
-		if (on2.isNil)
-		{
-			target.sendMsg(prefix ++ "/led_col", x.asInteger, on.asInteger);
-		}
-		{
-			target.sendMsg(prefix ++ "/led_col", x.asInteger, on.asInteger, on2.asInteger); 
-		};
+	ledCol { |x, yOffset, on = 255|
+		target.sendMsg(prefix ++ "/grid/led/col", x.asInteger, yOffset.asInteger, on.asInteger);
 	}
 	
 	intensity { |i|
-		target.sendMsg(prefix ++ "/intensity", i);
+		target.sendMsg(prefix ++ "/grid/led/intensity", i);
 	}
 
 	clear { |on|
-		on = on ?? 0;
-		width.do { |i| this.led_col(i, on * 255, on * 255) };
+		this.all(on);
 	}
-	
-	test { |on|
-		target.sendMsg(prefix ++ "/test", on.asInteger);
+
+	all { |on|
+		on = on ?? 0;
+		target.sendMsg(prefix ++ "/grid/led/all", on);
 	}
 }
 
