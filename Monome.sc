@@ -83,8 +83,8 @@ Monome
 		target.sendMsg(prefix ++ "/grid/led/set", x.asInteger, y.asInteger, on.asInteger);
 	}
 
-	ledRow { |y, xOffset, on = 255|
-		target.sendMsg(prefix ++ "/grid/led/row", y.asInteger, xOffset.asInteger, on.asInteger);
+	ledRow { |xOffset, y, on = 255|
+		target.sendMsg(prefix ++ "/grid/led/row", xOffset.asInteger, y.asInteger, on.asInteger);
 	}
 
 	ledCol { |x, yOffset, on = 255|
