@@ -5,9 +5,9 @@ via SerialOSC.
 
 Monome.sc:
  - represents a single Monome controller.
-   Call .led(x,y,s), .ledRow(y, xOffset, i), .ledCol(x, yOffset, i) 
+   Call .led(x,y,s), .ledRow(y, xOffset, i), .ledCol(x, yOffset, i)
    to set lights.
-   
+
    Set .action to respond to button-press events.
 
 MonomEm.sc
@@ -20,10 +20,14 @@ Origanally created by:
   Daniel Jones
   <http://www.erase.net>
 
-Support for new OSC protocol, 128/256, Linux GUI fixes and custom 
+Support for new OSC protocol, 128/256, Linux GUI fixes and custom
 prefixes added by:
   Tristan Strange
   <tristan.strange@gmail.com>
+
+Some other additions and fixes added by:
+  Peter Vasil
+  <mail@petervasil.net>
 
 
 MORE INFORMATION
