@@ -1,0 +1,195 @@
+TITLE:: Monome
+summary:: Interface for Monome controller
+categories:: External Control, Monome
+
+DESCRIPTION::
+Interface for Monome controller.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: host
+(describe argument here)
+
+ARGUMENT:: port
+(describe argument here)
+
+ARGUMENT:: prefix
+(describe argument here)
+
+ARGUMENT:: height
+(describe argument here)
+
+ARGUMENT:: width
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: emu
+(describe method here)
+
+ARGUMENT:: port
+(describe argument here)
+
+ARGUMENT:: width
+(describe argument here)
+
+ARGUMENT:: height
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: intensity
+(describe method here)
+
+ARGUMENT:: i
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: prefix
+(describe method here)
+
+ARGUMENT:: pre
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: pressed
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: action
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: ledCol
+(describe method here)
+
+ARGUMENT:: x
+(describe argument here)
+
+ARGUMENT:: yOffset
+(describe argument here)
+
+ARGUMENT:: on
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: host
+(describe method here)
+
+ARGUMENT:: h
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: rotation
+(describe method here)
+
+ARGUMENT:: rotation
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: width
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: ledRow
+(describe method here)
+
+ARGUMENT:: xOffset
+(describe argument here)
+
+ARGUMENT:: y
+(describe argument here)
+
+ARGUMENT:: on
+(describe argument here)
+
+ARGUMENT:: on2
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: port
+(describe method here)
+
+ARGUMENT:: p
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: led
+(describe method here)
+
+ARGUMENT:: x
+(describe argument here)
+
+ARGUMENT:: y
+(describe argument here)
+
+ARGUMENT:: on
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: all
+(describe method here)
+
+ARGUMENT:: on
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: target
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: height
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: clear
+(describe method here)
+
+ARGUMENT:: on
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+// m = Monome.new(port: <port number>);
+(
+m = Monome.new;
+m.action = { |x, y, on|
+	[x, y, on].postln;
+};
+)
+
+m.led(5, 6, 1);
+m.ledRow(0, 1, 255);
+m.ledCol(1, 0, 255);
+m.clear;
+::
