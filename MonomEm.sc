@@ -21,7 +21,6 @@
 
 MonomEm
 {
-
     var <host, <port;
     var prefix;
     var <width, <height;
@@ -112,7 +111,7 @@ MonomEm
         addr = NetAddr(host, port);
         resps = [];
         resps = resps.add(OSCFunc({ |msg| msg.postln; this.led(msg[1], msg[2], msg[3]) },prefix ++ "/grid/led/set", addr));
-        resps = resps.add(OSCFunc({ |msg| msg.postln; this.ledRow(msg[1], msg[2], msg[3]) },prefix ++ "/grid/led/row", addr));
+        resps = resps.add(OSCFunc({ |msg| msg.postln; this.ledRow(msg[1], msg[2], msg[3], msg[4]) },prefix ++ "/grid/led/row", addr));
         resps = resps.add(OSCFunc({ |msg| msg.postln; this.ledCol(msg[1], msg[2], msg[3]) },prefix ++ "/grid/led/col", addr));
 
         target = NetAddr("127.0.0.1", port);
@@ -131,22 +130,24 @@ MonomEm
         defer({ matrix[y][x].value = on; matrix[y][x].doAction; });
     }
 
-    ledRow { |y, on, on2 = 0|
-        on = on + (on2 * 256);
+    ledRow { |xOffset, y, on = 255, on2|
+        if(on2.notNil,
+            {on = on + (on2 * 256)});
         defer({
             width.do({ |x|
-                var pow = (2 ** x).asInteger;
-                matrix[y][x].value = ((pow & on) > 0).binaryValue
+                var pow = (2 ** x.mod(8)).asInteger;
+                matrix[y][x].value = ((pow & on) > 0).binaryValue;
+                matrix[y][x].doAction;
             });
         });
     }
 
-    ledCol { |x, on, on2 = 0|
-        on = on + (on2 * 256);
+    ledCol { |x, yOffset, on = 255|
         defer({
             height.do({ |y|
                 var pow = (2 ** y).asInteger;
-                matrix[y][x].value = ((pow & on) > 0).binaryValue
+                matrix[y][x].value = ((pow & on) > 0).binaryValue;
+                matrix[y][x].doAction;
             });
         });
     }
